@@ -191,7 +191,7 @@ Speedtest.prototype = {
         throw "You can't select a server while the test is running";
     }
     if (this._selectServerCalled) throw "selectServer already called"; else this._selectServerCalled=true;
-    /*this function goes through a list of servers. For each server, the ping is measured, then the server with the function selected is called with the best server, or null if all the servers were down.
+    /*this function goes through a list of servers. For each server, the ping is measured, then the server with the function result is called with the best server, or null if all the servers were down.
      */
     var select = function(serverList, selected) {
       //pings the specified URL, then calls the function result. Result will receive a parameter which is either the time it took to ping the URL, or -1 if something went wrong.
@@ -343,7 +343,7 @@ Speedtest.prototype = {
       function() {
         this.worker.postMessage("status");
       }.bind(this),
-      200
+      50
     );
     if (this._state == 1)
         throw "When using multiple points of test, you must call selectServer before starting the test";

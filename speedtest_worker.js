@@ -405,7 +405,7 @@ function dlTest(done) {
 				if (settings.time_auto) {
 					//decide how much to shorten the test. Every 200ms, the test is shortened by the bonusT calculated here
 					var bonus = (5.0 * speed) / 100000;
-					bonusT += bonus > 400 ? 400 : bonus;
+					bonusT += bonus > 100 ? 100 : bonus;
 				}
 				//update status
 				dlStatus = ((speed * 8 * settings.overheadCompensationFactor) / (settings.useMebibits ? 1048576 : 1000000)).toFixed(2); // speed is multiplied by 8 to go from bytes to bits, overhead compensation is applied, then everything is divided by 1048576 or 1000000 to go to megabits/mebibits
@@ -420,7 +420,7 @@ function dlTest(done) {
 				}
 			}
 		}.bind(this),
-		200
+		50
 	);
 }
 // upload test, calls done function whent it's over
