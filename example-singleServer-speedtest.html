@@ -2,7 +2,10 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0" name="viewport">
+    <meta
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"
+      name="viewport"
+    />
     <title>LibreSpeed</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <style type="text/css">
@@ -14,7 +17,7 @@
         text-align: center;
         background-color: #141526;
         color: white;
-        font-family: "HCo Gotham SSm",Helvetica,Arial,sans-serif;
+        font-family: "HCo Gotham SSm", Helvetica, Arial, sans-serif;
       }
 
       a {
@@ -101,7 +104,6 @@
         transition: height 0.5s ease;
       }
 
-
       @keyframes diffuse {
         0% {
           opacity: 0.1;
@@ -130,14 +132,15 @@
     <script src="speedtest.js"></script>
     <script type="text/javascript">
       var s = null
-      var chart1 = null, chart2 = null
+      var chart1 = null,
+        chart2 = null
       function runTest() {
         var chart1ctx = document.getElementById("chart1Area").getContext("2d")
         var chart2ctx = document.getElementById("chart2Area").getContext("2d")
         var dlDataset = {
           label: "Download",
           fill: false,
-          lineTension: 0.5,
+          lineTension: 0.2,
           backgroundColor: "rgba(75,192,192,0.4)",
           borderColor: "#6afff3",
           borderCapStyle: "butt",
@@ -159,7 +162,7 @@
         var ulDataset = {
           label: "Upload",
           fill: false,
-          lineTension: 0.5,
+          lineTension: 0.2,
           backgroundColor: "rgba(192,192,75,0.4)",
           borderColor: "#fff38e",
           borderCapStyle: "butt",
@@ -234,10 +237,10 @@
               position: "bottom",
             },
             animation: {
-              duration: 100
+              duration: 100,
             },
             tooltips: {
-              intersect: false
+              intersect: false,
             },
             scales: {
               xAxes: [
@@ -249,6 +252,9 @@
                   ticks: {
                     beginAtZero: true,
                   },
+                  gridLines: {
+                    display: false,
+                  },
                 },
               ],
               yAxes: [
@@ -257,6 +263,9 @@
                   scaleLabel: "Speed",
                   ticks: {
                     beginAtZero: true,
+                  },
+                  gridLines: {
+                    display: false,
                   },
                 },
               ],
@@ -306,18 +315,32 @@
 
         document.getElementById("testArea").classList.add("show", "run")
         s = new Speedtest()
-        const segment = 50
-        for (let i=0; i<segment; ++i)
-          chart1.data.labels[i] = ""
-        chart1.data.labels[segment-1] = ""
+        let AvgDl = 0,
+          AvgUl = 0
+        const segment = 1000
+        for (let i = 0; i < segment; ++i) chart1.data.labels[i] = ""
+        chart1.data.labels[segment - 1] = ""
         s.onupdate = function (data) {
           var status = data.testState
           if (status === 1 && Number(data.dlStatus) > 0) {
-            chart1.data.datasets[0].data[~~(segment * Number(data.dlProgress))] = Number(data.dlStatus)
+            const avg = AvgDl
+              ? (AvgDl * 3 + Number(data.dlStatus) * 1) / 4
+              : Number(data.dlStatus)
+            chart1.data.datasets[0].data[
+              ~~(segment * Number(data.dlProgress))
+            ] = avg.toFixed(1)
+
+            AvgDl = avg
             chart1.update()
           }
           if (status === 3 && Number(data.ulStatus) > 0) {
-            chart1.data.datasets[1].data[~~(segment * Number(data.ulProgress))] = Number(data.ulStatus)
+            const avg = AvgUl
+              ? (AvgUl * 3 + Number(data.ulStatus) * 1) / 4
+              : Number(data.ulStatus)
+            chart1.data.datasets[1].data[
+              ~~(segment * Number(data.ulProgress))
+            ] = avg.toFixed(1)
+            AvgUl = avg
             chart1.update()
           }
           if (status === 2 && Number(data.pingStatus) > 0) {
@@ -334,10 +357,10 @@
           document.getElementById("testArea").classList.remove("run")
           s = null
           // if (aborted) {
-            // document.getElementById("testArea").style.display = "none"
+          // document.getElementById("testArea").style.display = "none"
           // }
         }
-        setTimeout(()=>{
+        setTimeout(() => {
           document.getElementById("startBtn").textContent = "Abort"
           s.start()
         }, 500)
@@ -352,7 +375,6 @@
           runTest()
         }
       }
-      
     </script>
   </head>
 
@@ -369,10 +391,9 @@
       <br />
     </div>
     <div class="btn-wrap">
-    <a href="javascript:runOrAbort()" id="startBtn">GO</a>
-  </div>
-    <br /><br /><br /><a
-      href="https://github.com/librespeed/speedtest"
+      <a href="javascript:runOrAbort()" id="startBtn">GO</a>
+    </div>
+    <br /><br /><br /><a href="https://github.com/librespeed/speedtest"
       >Source code</a
     >
   </body>
