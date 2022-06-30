@@ -140,7 +140,7 @@
         var dlDataset = {
           label: "Download",
           fill: false,
-          lineTension: 0.2,
+          lineTension: 0.5,
           backgroundColor: "rgba(75,192,192,0.4)",
           borderColor: "#6afff3",
           borderCapStyle: "butt",
@@ -162,7 +162,7 @@
         var ulDataset = {
           label: "Upload",
           fill: false,
-          lineTension: 0.2,
+          lineTension: 0.5,
           backgroundColor: "rgba(192,192,75,0.4)",
           borderColor: "#fff38e",
           borderCapStyle: "butt",
@@ -232,15 +232,16 @@
             datasets: [dlDataset, ulDataset],
           },
           options: {
+            events: ["mousemove", "mouseout", "touchmove", "touchend"],
             responsive: true,
             legend: {
               position: "bottom",
             },
             animation: {
-              duration: 100,
+              duration: 500,
             },
             tooltips: {
-              intersect: false,
+              intersect: true,
             },
             scales: {
               xAxes: [
@@ -317,30 +318,43 @@
         s = new Speedtest()
         let AvgDl = 0,
           AvgUl = 0
-        const segment = 1000
+        let IndexDl = [],
+          IndexUl = []
+        const segment = 100
         for (let i = 0; i < segment; ++i) chart1.data.labels[i] = ""
-        chart1.data.labels[segment - 1] = ""
         s.onupdate = function (data) {
           var status = data.testState
           if (status === 1 && Number(data.dlStatus) > 0) {
             const avg = AvgDl
               ? (AvgDl * 3 + Number(data.dlStatus) * 1) / 4
               : Number(data.dlStatus)
-            chart1.data.datasets[0].data[
-              ~~(segment * Number(data.dlProgress))
-            ] = avg.toFixed(1)
-
-            AvgDl = avg
+            const index = ~~(segment * Number(data.dlProgress))
+            AvgDl = avg // update average
+            chart1.data.datasets[0].data[index] = avg.toFixed(1)
+            //push to IndexDl if last index is not the same as current index
+            if (!IndexDl.length || IndexDl[IndexDl.length - 1] !== index) {
+              IndexDl.push(index)
+            }
+            for (let i = 1; i < IndexDl.length - 5; ++i) {
+              chart1.data.datasets[0].data[IndexDl[i]] = undefined
+              if (i % 3 === 0) ++i // keep every three dots
+            }
             chart1.update()
           }
           if (status === 3 && Number(data.ulStatus) > 0) {
             const avg = AvgUl
               ? (AvgUl * 3 + Number(data.ulStatus) * 1) / 4
               : Number(data.ulStatus)
-            chart1.data.datasets[1].data[
-              ~~(segment * Number(data.ulProgress))
-            ] = avg.toFixed(1)
+            const index = ~~(segment * Number(data.ulProgress))
             AvgUl = avg
+            chart1.data.datasets[1].data[index] = avg.toFixed(1)
+            if (!IndexUl.length || IndexUl[IndexUl.length - 1] !== index) {
+              IndexUl.push(index)
+            }
+            for (let i = 1; i < IndexUl.length - 5; ++i) {
+              chart1.data.datasets[1].data[IndexUl[i]] = undefined
+              if (i % 3 === 0) ++i // keep every three dots
+            }
             chart1.update()
           }
           if (status === 2 && Number(data.pingStatus) > 0) {
