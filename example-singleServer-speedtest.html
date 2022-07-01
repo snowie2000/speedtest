@@ -335,9 +335,9 @@
             if (!IndexDl.length || IndexDl[IndexDl.length - 1] !== index) {
               IndexDl.push(index)
             }
-            for (let i = 1; i < IndexDl.length - 5; ++i) {
-              chart1.data.datasets[0].data[IndexDl[i]] = undefined
-              if (i % 3 === 0) ++i // keep every three dots
+            if (IndexDl.length > 5 && IndexDl.length % 3 !== 2) {
+              chart1.data.datasets[0].data[IndexDl[IndexDl.length - 3]] =
+                undefined
             }
             chart1.update()
           }
@@ -351,9 +351,9 @@
             if (!IndexUl.length || IndexUl[IndexUl.length - 1] !== index) {
               IndexUl.push(index)
             }
-            for (let i = 1; i < IndexUl.length - 5; ++i) {
-              chart1.data.datasets[1].data[IndexUl[i]] = undefined
-              if (i % 3 === 0) ++i // keep every three dots
+            if (IndexUl.length > 5 && IndexUl.length % 3 !== 2) {
+              chart1.data.datasets[1].data[IndexUl[IndexUl.length - 3]] =
+                undefined
             }
             chart1.update()
           }
