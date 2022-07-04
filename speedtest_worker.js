@@ -383,7 +383,7 @@ function dlTest(done) {
 	for (var i = 0; i < settings.xhr_dlMultistream; i++) {
 		testStream(i, settings.xhr_multistreamDelay * i);
 	}
-	// every 200ms, update dlStatus
+	// every 50ms, update dlStatus
 	interval = setInterval(
 		function() {
 			tverb("DL: " + dlStatus + (graceTimeDone ? "" : " (in grace time)"));
@@ -404,7 +404,7 @@ function dlTest(done) {
 				var speed = totLoaded / (t / 1000.0);
 				if (settings.time_auto) {
 					//decide how much to shorten the test. Every 200ms, the test is shortened by the bonusT calculated here
-					var bonus = (5.0 * speed) / 100000;
+					var bonus = (1.25 * speed) / 100000;
 					bonusT += bonus > 100 ? 100 : bonus;
 				}
 				//update status
@@ -552,7 +552,7 @@ function ulTest(done) {
 					var speed = totLoaded / (t / 1000.0);
 					if (settings.time_auto) {
 						//decide how much to shorten the test. Every 200ms, the test is shortened by the bonusT calculated here
-						var bonus = (5.0 * speed) / 100000;
+						var bonus = (1.25 * speed) / 100000;
 						bonusT += bonus > 100 ? 100 : bonus;
 					}
 					//update status
